@@ -111,7 +111,7 @@ const WebSearchProvider = new Lang.Class({
   /**
    * A dictionary describing a given search result.
    * @typedef Meta
-   * @type {Obect}
+   * @type {Object}
    * @property {String} name A human-readable name for the given search result.
    * @property {String} id The result identifier for the given search result.
    * @property {String} [icon] An icon (a serialized GIcon as obtained by
@@ -132,13 +132,9 @@ const WebSearchProvider = new Lang.Class({
    * triggered this call. In practice, timestamp is not passed to the function.
    */
   activateResult: function (identifier, terms) {
-    // // 'terms' is not the same as what was typed, so 'terms' is not used.
-    // let query = terms.join(' ');
-    let query = Main.overview._searchEntry.text;
-    let queryUrlTemplate = this._searchEngines[identifier].urlTemplate;
-    let queryUrl = queryUrlTemplate.replace(
-        /{searchTerms}/g, encodeURIComponent(query));
-    Util.spawn(['xdg-open', queryUrl]);
+    termsURIFormat = terms.map( (term) => encodeURIComponent(term));
+    searchQuery = this._searchEngines[identifier].urlTemplate.replace(/{searchTerms}/, termsURIFormat.join('+'));
+    Util.spawn(['xdg-open', searchQuery]);
   },
 
   /**
